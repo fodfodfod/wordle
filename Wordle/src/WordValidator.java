@@ -15,7 +15,7 @@ public class WordValidator {
     
     public WordValidator(){
         validAnswers = new String[12942];
-        File file = new File("src/word_lists/wordle_guesses.txt");
+        File file = new File("src/wordle_guesses.txt");
         Scanner input = null;
         try{
             input = new Scanner(file);

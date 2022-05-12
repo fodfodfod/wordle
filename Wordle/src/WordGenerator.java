@@ -9,7 +9,7 @@ public class WordGenerator {
     public WordGenerator(){
         r = new Random();
         validWords = new String[2315];
-        File file = new File("src/word_lists/wordle_answers.txt");
+        File file = new File("src/wordle_answers.txt");
         Scanner input = null;
         try{
             input = new Scanner(file);
