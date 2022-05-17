@@ -1,7 +1,9 @@
 public class App {
     public static void main(String[] args) throws Exception {
-        System.out.println("Hello, World!");
-        System.out.println("Hello, World!");
+    	WordGenerator wg = new WordGenerator(); 
+    	System.out.println(wg.generateWord()); 
+    	
+       
         Game g = new Game();
         g.playGame();
     }
