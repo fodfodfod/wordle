@@ -13,6 +13,7 @@ public class Game {
  
 	public void startGame() {
 		WordGenerator wg = new WordGenerator(); 
+		printInstructions(); 
 		obtainValidUserWord(); 
 		
 		
@@ -21,14 +22,10 @@ public class Game {
 		        // Print out instructions 
 		        this.printInstructions();
 
-		        // ask the user for the first guess
-		        this.askForFirstGuess();
+		        // ask the user for the first gues
 
-		       // this.loopThroughSixGuesses();
-
-		    
-
-
+		       // this.loopThroughSixGuesses()
+		        askForGuesses();
 	}
 	
 	 public String obtainValidUserWord () {
@@ -40,7 +37,7 @@ public class Game {
 		
 		while(userWord.length() != 5) {
 			if(userWord.length() < 5) {
-				System.out.println("Please enter a word with 5 letters: "); 
+				System.out.println("Enter a word with 5 letters: "); 
 				userWord=kb.nextLine(); 
 			}
 			else if (containsNums == true) {
@@ -53,7 +50,7 @@ public class Game {
 			}
 			
 		}
-		return wordList; 
+	return userWord; 
 	 } 
 	 public boolean checkContainsNumbers(String word) {
 		 for(int cnt = 0; cnt < word.length(); cnt++) {
@@ -67,12 +64,13 @@ public class Game {
 	 }
 	 
 	public void printInstructions() { 
-
-	}
-
-
-	public void askForFirstGuess() {
-		
+		System.out.println("You have to guess the Wordle in six goes or less.\n"
+				+ "Every word you enter must be in the word list. ...\n"
+				+ "A correct letter turns green.\n"
+				+ "A correct letter in the wrong place turns yellow.\n"
+				+ "An incorrect letter turns gray.\n"
+				+ "Letters can be used more than once.\n"
+				+ "Answers are never plurals."); 
 	}
 	public void askForGuesses() {
 		for(int cnt = 0; cnt < 6; cnt ++) {
@@ -95,6 +93,7 @@ public class Game {
 				suf = "st";
 			}
 			System.out.print("Enter your " + cnt + suf + " guess.");
+			userWord = obtainValidUserWord(); 
 		}
 	
 	}
