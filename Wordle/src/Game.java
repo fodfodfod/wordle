@@ -1,22 +1,17 @@
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner; 
 
 public class Game {
 	public String userWord; 
-	public List<Character> greenLetters = new ArrayList<>(); 
-	public List<Character> YellowLetters = new ArrayList<>(); 
-	public final String ANSI_YELLOW = "\\u001B[43m"; 
-	public final String ANSI_GREEN = "\\u001B[42m"; 
+
 	public final String ANSI_RESET = "\\u001B[37m"; 
 	public int[] numbers = {0,1,2,3,4,5,6,7,8,9}; 
 	public boolean containsNums; 
 	public String suf; 
 	public String keyWord; 
-	public int valid; 
 	public char userChar; 
- 
+	public boolean gamePlay = true; 
+
 	public void startGame() {
 		WordGenerator wg = new WordGenerator(); 
 		keyWord=wg.generateWord(); 
@@ -24,14 +19,14 @@ public class Game {
 		System.out.println(keyWord); 
 		askForGuesses(keyWord); 
 	}
-	
-	 public String obtainValidUserWord () {
-		 Scanner kb = new Scanner(System.in) ;
-		 System.out.println("Enter a word with 5 letters__: "); 
+
+	public String obtainValidUserWord () {
+		Scanner kb = new Scanner(System.in) ;
+		System.out.println("Enter a word with 5 letters: "); 
 		userWord = kb.nextLine(); 
 		userWord= userWord.toLowerCase(); 
 		containsNums = checkContainsNumbers(userWord); 
-		
+
 		while(userWord.length() != 5) {
 			if(userWord.length() < 5) {
 				System.out.println(userWord.length()); 
@@ -46,21 +41,21 @@ public class Game {
 				System.out.println("Your inputed word: " + userWord + " is not contained in our word list, please enter a valid 5 letter word: ");
 				userWord=kb.nextLine(); 
 			}
-			
 		}
-	return userWord; 
-	 } 
-	 public boolean checkContainsNumbers(String word) {
-		 for(int cnt = 0; cnt < word.length(); cnt++) {
-			 for(int i = 0; i < numbers.length; i++) {
-				 if(word.charAt(cnt) == numbers[i]) {
+		return userWord; 
+	} 
+
+	public boolean checkContainsNumbers(String word) {
+		for(int cnt = 0; cnt < word.length(); cnt++) {
+			for(int i = 0; i < numbers.length; i++) {
+				if(word.charAt(cnt) == numbers[i]) {
 					return true; 
-				 }
-			 }
-		 }
+				}
+			}
+		}
 		return false;
-	 }
-	 
+	}
+
 	public void printInstructions() { 
 		System.out.println("You have to guess the Wordle in six goes or less.\n"
 				+ "Every word you enter must be in the word list. ...\n"
@@ -70,8 +65,10 @@ public class Game {
 				+ "Letters can be used more than once.\n"
 				+ "Answers are never plurals."); 
 	}
+
 	public String askForGuesses(String keyWord) {
-		for(int cnt = 1; cnt < 6; cnt ++) {
+		int cnt = 1; 
+		while(gamePlay == true && cnt < 6) {
 			switch(cnt) {
 			case 1: 
 				suf = "st"; 
@@ -91,36 +88,30 @@ public class Game {
 				suf = "st";
 			}
 			System.out.print("Enter your " + cnt + suf + " guess. ");
-			obtainValidUserWord(); 
-			userWord = obtainValidUserWord(); 
-			checkWord(userWord,keyWord); 
-		}
+			userWord =	obtainValidUserWord(); 
+
+			printYellowGreen(userWord,keyWord); 
+			cnt++; 
+		} 
 		return userWord; 
 	}
-	
-	public void checkWord(String userWord, String keyWord) {
-		WordValidator wv = new WordValidator(); 
-		valid = wv.validWord(userWord, keyWord); 
-		if (valid == 1) {
-			System.out.println(ANSI_GREEN + userWord + ANSI_RESET);
-			System.out.println("You Won!"); 
-		}
-		else{
-			printYellowGreen(userWord,keyWord); 
-		}
-	}
+
 	public void printYellowGreen(String userWord, String keyWord) {
+		if(keyWord.contains(userWord)) {
+			gamePlay = false; 
+			System.out.println("You Won"); 
+		}
+
 		for(int cnt = 0; cnt < userWord.length(); cnt++) {
 			userChar = userWord.charAt(cnt); 
-			if (userWord.charAt(cnt) == keyWord.charAt(cnt)) { 
-				System.out.print(ANSI_GREEN + userChar + ANSI_RESET);
-				if(keyWord.indexOf(userChar)!= -1) {
-					System.out.print(ANSI_YELLOW +userChar + ANSI_RESET);
-				}
-				
+			if (userChar == keyWord.charAt(cnt)) { 
+				System.out.print(" Green: " + userChar );
 			}
-			else {
-				System.out.print(userChar); 
+			if(userWord.charAt(cnt) != keyWord.charAt(cnt) && keyWord.indexOf(userChar) >= 0) {
+				System.out.print(" Yellow: " + userChar);
+			}
+			else if (keyWord.indexOf(userChar)== -1){
+				System.out.print(" Grey: " + userChar); 
 			}
 		}
 		System.out.println(); 
