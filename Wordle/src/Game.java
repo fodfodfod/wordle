@@ -1,42 +1,40 @@
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner; 
 
 public class Game {
 	public String userWord; 
-	public String[] greenLetters = new String[5]; 
-	public String[] yellowLetters = new String[5]; 
-	public String ANSI_YELLOW = "\\u001B[43m"; 
-	public String ANSI_GREEN = "\\u001B[42m"; 
+	public List<Character> greenLetters = new ArrayList<>(); 
+	public List<Character> YellowLetters = new ArrayList<>(); 
+	public final String ANSI_YELLOW = "\\u001B[43m"; 
+	public final String ANSI_GREEN = "\\u001B[42m"; 
+	public final String ANSI_RESET = "\\u001B[37m"; 
 	public int[] numbers = {0,1,2,3,4,5,6,7,8,9}; 
 	public boolean containsNums; 
 	public String suf; 
+	public String keyWord; 
+	public int valid; 
+	public char userChar; 
  
 	public void startGame() {
 		WordGenerator wg = new WordGenerator(); 
+		keyWord=wg.generateWord(); 
 		printInstructions(); 
-		obtainValidUserWord(); 
-		
-		
-		       //Call WordGenerator to Generate a word 
-
-		        // Print out instructions 
-		        this.printInstructions();
-
-		        // ask the user for the first gues
-
-		       // this.loopThroughSixGuesses()
-		        askForGuesses();
+		System.out.println(keyWord); 
+		askForGuesses(keyWord); 
 	}
 	
 	 public String obtainValidUserWord () {
 		 Scanner kb = new Scanner(System.in) ;
-		 System.out.println("Enter a word with 5 letters: "); 
+		 System.out.println("Enter a word with 5 letters__: "); 
 		userWord = kb.nextLine(); 
 		userWord= userWord.toLowerCase(); 
 		containsNums = checkContainsNumbers(userWord); 
 		
 		while(userWord.length() != 5) {
 			if(userWord.length() < 5) {
+				System.out.println(userWord.length()); 
 				System.out.println("Enter a word with 5 letters: "); 
 				userWord=kb.nextLine(); 
 			}
@@ -72,8 +70,8 @@ public class Game {
 				+ "Letters can be used more than once.\n"
 				+ "Answers are never plurals."); 
 	}
-	public void askForGuesses() {
-		for(int cnt = 0; cnt < 6; cnt ++) {
+	public String askForGuesses(String keyWord) {
+		for(int cnt = 1; cnt < 6; cnt ++) {
 			switch(cnt) {
 			case 1: 
 				suf = "st"; 
@@ -92,9 +90,39 @@ public class Game {
 			if(cnt==1) {
 				suf = "st";
 			}
-			System.out.print("Enter your " + cnt + suf + " guess.");
+			System.out.print("Enter your " + cnt + suf + " guess. ");
+			obtainValidUserWord(); 
 			userWord = obtainValidUserWord(); 
+			checkWord(userWord,keyWord); 
 		}
+		return userWord; 
+	}
 	
+	public void checkWord(String userWord, String keyWord) {
+		WordValidator wv = new WordValidator(); 
+		valid = wv.validWord(userWord, keyWord); 
+		if (valid == 1) {
+			System.out.println(ANSI_GREEN + userWord + ANSI_RESET);
+			System.out.println("You Won!"); 
+		}
+		else{
+			printYellowGreen(userWord,keyWord); 
+		}
+	}
+	public void printYellowGreen(String userWord, String keyWord) {
+		for(int cnt = 0; cnt < userWord.length(); cnt++) {
+			userChar = userWord.charAt(cnt); 
+			if (userWord.charAt(cnt) == keyWord.charAt(cnt)) { 
+				System.out.print(ANSI_GREEN + userChar + ANSI_RESET);
+				if(keyWord.indexOf(userChar)!= -1) {
+					System.out.print(ANSI_YELLOW +userChar + ANSI_RESET);
+				}
+				
+			}
+			else {
+				System.out.print(userChar); 
+			}
+		}
+		System.out.println(); 
 	}
 }
