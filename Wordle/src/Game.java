@@ -18,6 +18,7 @@ public class Game {
 		printInstructions(); 
 		System.out.println(keyWord); 
 		askForGuesses(keyWord); 
+	
 	}
 
 	public String obtainValidUserWord () {
@@ -26,10 +27,12 @@ public class Game {
 		userWord = kb.nextLine(); 
 		userWord= userWord.toLowerCase(); 
 		containsNums = checkContainsNumbers(userWord); 
-
-		while(userWord.length() != 5) {
+		WordValidator wv = new WordValidator(); 
+		
+		
+		while(userWord.length() != 5||wv.validWord(userWord,keyWord)== 0) {
 			if(userWord.length() < 5) {
-				System.out.println(userWord.length()); 
+				System.out.println("Only contains: " +userWord.length()+ " letters."); 
 				System.out.println("Enter a word with 5 letters: "); 
 				userWord=kb.nextLine(); 
 			}
@@ -68,7 +71,7 @@ public class Game {
 
 	public String askForGuesses(String keyWord) {
 		int cnt = 1; 
-		while(gamePlay == true && cnt < 6) {
+		while(gamePlay == true && cnt < 7) {
 			switch(cnt) {
 			case 1: 
 				suf = "st"; 
@@ -91,8 +94,11 @@ public class Game {
 			userWord =	obtainValidUserWord(); 
 
 			printYellowGreen(userWord,keyWord); 
-			cnt++; 
+			cnt++; 	
 		} 
+		if(cnt == 7) {
+			System.out.print("You Lose");
+		}
 		return userWord; 
 	}
 
